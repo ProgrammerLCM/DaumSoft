@@ -5,7 +5,7 @@ public class Task1 {
 	public static void main(String[] args) {
 		
 		//Perform1 p1 = new Perform1(1000);
-		Perform1 p1 = new Perform1();
+		//Perform1 p1 = new Perform1();
 		
 		//Perform2 p2 = new Perform2();
 		
