@@ -10,7 +10,7 @@ public class DBConnection {
 		Connection conn = null;
 
 		try {
-			String URL = "jdbc:mariadb://127.0.0.1:3307/test";
+			String URL = "jdbc:mariadb://127.0.0.1:3306/test";
 			//String URL = "jdbc:mysql://localhost:3306/newcomer?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
 			String ID = "root";
 			String Password = "1111";

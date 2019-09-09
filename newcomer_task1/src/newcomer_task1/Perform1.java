@@ -31,6 +31,7 @@ public class Perform1 {
 	
 	// 테이블 하나 채울 때 쓰는 생성자
 	public Perform1(int batchSize) {
+		//inputOneSQL(batchSize);
 		inputLbatchOfor(batchSize);
 	}
 	
@@ -170,10 +171,60 @@ public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형
 		
 		long end = System.currentTimeMillis();
 		
+		System.out.println("inputLbatchOfor 실행완료!!!");
+		System.out.println("처리시간 : " + (end-start) + "\n");
+		
+		return end-start;
+	}
+
+
+
+
+
+	public long inputOneSQL(int batch) {	// 전체를 파싱하고 리스트 형태로 전달, batch을 사용해서 삽입, 이중 for문 batch
+		
+		long start = System.currentTimeMillis();
+		
+		TsvParserSettings settings = null;
+		TsvParser parser = null;
+		List<String[]> list = null;
+		List<String> colist = null;
+		
+		String filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1\\doc.tsv";
+		
+		try {
+			// FileInputStream : 파일을 바이트 단위로 읽어옴
+			// InputStreamReader : 바이트 스트림을 문자 스트림으로 변환
+			fileInputStream = new FileInputStream(filepath);
+			inputStreamReader = new InputStreamReader(fileInputStream,"UTF8");
+			bufferedReader = new BufferedReader(inputStreamReader);
+			dao = new DataDAO("1");
+			
+			settings = new TsvParserSettings();
+			parser = new TsvParser(settings);
+			list = parser.parseAll(bufferedReader);
+			colist = dao.selectColumn();
+			dao.insert_inputOneSQL(list, batch, colist, "skip");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(bufferedReader != null) { try { bufferedReader.close(); } catch (IOException e) { } }
+			if(inputStreamReader != null) { try { inputStreamReader.close(); } catch (IOException e) { } }
+			if(fileInputStream != null) { try { fileInputStream.close(); } catch (IOException e) { } }
+		}
+		
+		long end = System.currentTimeMillis();
+		
 		//System.out.println("inputLbatchOfor 실행완료!!!");
 		//System.out.print((end-start) + "\t");
 		
 		return end-start;
 	}
+
 	
 }
+
+
+
+
+

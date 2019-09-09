@@ -40,7 +40,7 @@ public class Perform2 {
 		
 		long end = System.currentTimeMillis();
 		
-		System.out.println("Perform2_action1 실행완료!!!");
+		System.out.println("Perform2_action1(tsv파일) 실행완료!!!");
 		System.out.println("처리시간 : " + (end-start));
 		
 	}
@@ -63,7 +63,7 @@ public class Perform2 {
 
 		long end = System.currentTimeMillis();
 		
-		System.out.println("Perform2_action2 실행완료!!!");
+		System.out.println("Perform2_action2(tag파일) 실행완료!!!");
 		System.out.println("처리시간 : " + (end-start));
 		
 	}
@@ -86,8 +86,8 @@ public class Perform2 {
 
 		long end = System.currentTimeMillis();
 		
-		System.out.println("Perform2_action3 실행완료!!!");
-		System.out.println("처리시간 : " + (end-start));
+		System.out.println("Perform2_action3(json파일) 실행완료!!!");
+		System.out.println("처리시간 : " + (end-start) + "\n");
 		
 	}
 	

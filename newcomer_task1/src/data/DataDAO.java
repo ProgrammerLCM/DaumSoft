@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -252,6 +253,62 @@ public class DataDAO {
 			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
 		}
 	}
+	
+	
+
+	public void insert_inputOneSQL(List<String[]> list, int batch, List<String> columnlist, String type) {
+		Connection conn = null;
+		Statement stmt = null;
+		
+		List<String> columnList = null;
+		
+		if(columnlist != null) {
+			columnList = columnlist;
+		}
+		
+		String sql = "insert into " + tablename + "(" + columnList.get(0) + "," + columnList.get(1) + "," + columnList.get(2) + ") values ";
+		int outloop = 0;
+		int listsize = 0;
+		int t = type.equals("skip")?1:0;
+		listsize = list.size();
+		outloop = (listsize-1)/batch;
+		boolean comma = false;
+		
+		try {
+			conn = new DBConnection().getConnection();
+			stmt = conn.createStatement();
+			//conn.setAutoCommit(false);
+			
+			//for(int i=0; i<1; i++) {
+			for(int i=0; i<outloop; i++) {
+				sql = "insert into " + tablename + "(" + columnList.get(0) + "," + columnList.get(1) + "," + columnList.get(2) + ") values ";
+				for(int j=i*batch+t; j<=(i+1)*batch; j++) {
+					if(comma)
+						sql += ",";
+					sql += "(" + list.get(j)[0] + ",'" + list.get(j)[1] + "','" + list.get(j)[2] + "')";
+					comma = true;
+				}
+				stmt.executeUpdate(sql);
+				comma = false;
+			}
+			
+			for(int i=outloop*batch+1; i<listsize; i++) {
+				sql += ",(" + list.get(i)[0] + ",'" + list.get(i)[1] + "','" + list.get(i)[2] + "')";
+			}
+			
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (stmt != null) try { stmt.close(); } catch(SQLException ex) {} 
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		
+	}
+	
+	
 	//==================================================================
 	
 	
@@ -370,4 +427,5 @@ public class DataDAO {
 		}
 		return result;
 	}
+
 }
