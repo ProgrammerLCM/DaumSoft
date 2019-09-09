@@ -197,7 +197,7 @@ public class DataDAO {
 	
 	// 통째로 읽어서 여래개씩 삽입, batch o 이중 for문
 	// https://fruitdev.tistory.com/111
-	public void insert_inputLbatchOfor(List<String[]> list, int batch, List<String> columnlist) {
+	public void insert_inputLbatchOfor(List<String[]> list, int batch, List<String> columnlist, String type) {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -212,6 +212,7 @@ public class DataDAO {
 		String sql = "insert into " + tablename + "(" + columnList.get(0) + "," + columnList.get(1) + "," + columnList.get(2) + ") values (?,?,?)";
 		int outloop = 0;
 		int listsize = 0;
+		int t = type.equals("skip")?1:0;
 		listsize = list.size();
 		outloop = (listsize-1)/batch;
 		
@@ -221,7 +222,7 @@ public class DataDAO {
 			conn.setAutoCommit(false);
 			
 			for(int i=0; i<outloop; i++) {
-				for(int j=i*batch+1; j<=(i+1)*batch; j++) {
+				for(int j=i*batch+t; j<=(i+1)*batch; j++) {
 					pstmt.setInt(1, Integer.parseInt(list.get(j)[0]));
 					pstmt.setString(2, list.get(j)[1]);
 					pstmt.setString(3, list.get(j)[2]);

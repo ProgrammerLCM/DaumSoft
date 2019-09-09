@@ -9,6 +9,30 @@ import java.util.List;
 
 import data.DataDAO;
 
+
+/*
+SELECT TITLE FROM DOC1 WHERE TITLE LIKE '[%]';
+'['로 시작하고 ']'로 끝나는 TITLE이 있음
+
+SELECT TITLE FROM DOC1 WHERE TITLE LIKE '^%';
+'^'로 시작하는 TITLE이 있음
+
+조건 다시 변경
+*/
+/* 기존 코드
+while((str = bufferedReader.readLine()) != null) {
+if(str.charAt(0)=='^' && !flag) {	// start
+	flag = true;
+	result = new ArrayList<String>();
+} else if(str.charAt(0)=='[') {
+	result.add(str.substring(1,str.length()-1));
+} else if(str.charAt(0)=='^' && flag) {	// end
+	break;
+}
+}
+*/
+
+
 public class Perform3 {
 	
 	public Perform3() {	}
@@ -21,7 +45,7 @@ public class Perform3 {
 		
 		long start = System.currentTimeMillis();
 		
-		String filepath = "C:\\Users\\Daumsoft\\eclipse-workspace\\newcomer_task1\\perform2_tag.txt";
+		String filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1\\perform2_tag.txt";
 		//String filepath = "C:\\Users\\Daumsoft\\eclipse-workspace\\newcomer_task1\\perform3_json.json";
 		FileInputStream fileInputStream = null;
 		InputStreamReader inputStreamReader = null;
@@ -46,20 +70,25 @@ public class Perform3 {
 			
 			list = new ArrayList<String[]>();
 			while((str = bufferedReader.readLine()) != null) {
-				if(str.charAt(0)=='^' && !flag) {	// start
+				//if(str.charAt(0)=='^' && !flag) {	// start
+				if(!flag && str.substring(0,2).equals("^[")) {	// start
 					flag = true;
 					strarr = new String[arrsize];
-				} else if(str.charAt(0)=='^' && flag) {	// end
+				//} else if(str.charAt(0)=='^' && flag) {	// end
+				} else if(str.length()>1 && str.substring(0,2).equals("^[") && flag) {	// end
 					list.add(strarr);
 					flag = false;
 					i = 0;
 				} else if(str.charAt(0)!='['){
 					strarr[i] = str;
 					i++;
+				} else if(str.charAt(0)=='[' && !textColumnList.contains(str.substring(1,str.length()-1))){
+					strarr[i] = str;
+					i++;
 				}
 			}
 			
-			dao.insert_inputLbatchOfor(list, batch, textColumnList);
+			dao.insert_inputLbatchOfor(list, batch, textColumnList, "no");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,27 +120,6 @@ public class Perform3 {
 			inputStreamReader =new InputStreamReader(fileInputStream,"UTF8");
 			bufferedReader = new BufferedReader(inputStreamReader);
 			
-			/*
-				SELECT TITLE FROM DOC1 WHERE TITLE LIKE '[%]';
-				'['로 시작하고 ']'로 끝나는 TITLE이 있음
-				
-				SELECT TITLE FROM DOC1 WHERE TITLE LIKE '^%';
-				'^'로 시작하는 TITLE이 있음
-				
-				조건 다시 변경
-			*/
-			/* 기존 코드
-			while((str = bufferedReader.readLine()) != null) {
-				if(str.charAt(0)=='^' && !flag) {	// start
-					flag = true;
-					result = new ArrayList<String>();
-				} else if(str.charAt(0)=='[') {
-					result.add(str.substring(1,str.length()-1));
-				} else if(str.charAt(0)=='^' && flag) {	// end
-					break;
-				}
-			}
-			*/
 			while((str = bufferedReader.readLine()) != null) {
 				if(str.charAt(0)=='^' && !flag) {	// start
 					flag = true;

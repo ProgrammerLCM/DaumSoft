@@ -145,7 +145,7 @@ public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형
 		List<String[]> list = null;
 		List<String> colist = null;
 		
-		String filepath = "C:\\Users\\Daumsoft\\eclipse-workspace\\newcomer_task1\\doc.tsv";
+		String filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1\\doc.tsv";
 		
 		try {
 			// FileInputStream : 파일을 바이트 단위로 읽어옴
@@ -159,7 +159,7 @@ public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형
 			parser = new TsvParser(settings);
 			list = parser.parseAll(bufferedReader);
 			colist = dao.selectColumn();
-			dao.insert_inputLbatchOfor(list, batch, colist);
+			dao.insert_inputLbatchOfor(list, batch, colist, "skip");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

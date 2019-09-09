@@ -9,7 +9,7 @@ public class Task1 {
 		
 		//Perform2 p2 = new Perform2();
 		
-		//Perform3 p3 = new Perform3(1000);
+		Perform3 p3 = new Perform3(100000);
 		
 	}
 }

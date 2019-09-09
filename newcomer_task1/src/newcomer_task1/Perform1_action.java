@@ -26,7 +26,7 @@ public class Perform1_action {
 	private List<String> colist = null;
 
 	public Perform1_action() {
-		filepath = "C:\\Users\\Daumsoft\\eclipse-workspace\\newcomer_task1\\doc.tsv";
+		filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1\\doc.tsv";
 		dao = new DataDAO("1");
 		colist = dao.selectColumn();
 	}
@@ -181,7 +181,7 @@ public class Perform1_action {
 			parser = new TsvParser(settings);
 			list = parser.parseAll(bufferedReader);
 			
-			dao.insert_inputLbatchOfor(list, batch, colist);
+			dao.insert_inputLbatchOfor(list, batch, colist, "skip");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

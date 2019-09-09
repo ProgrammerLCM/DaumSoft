@@ -93,7 +93,7 @@ public class Perform2 {
 	
 	public void fileWrite(List<String> column, List<String[]> list, String sub, String type, String extension) {
 
-		String filepath = "C:\\Users\\Daumsoft\\eclipse-workspace\\newcomer_task1";
+		String filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1";
 		String title = sub + "_" + type;
 		
 		try {
