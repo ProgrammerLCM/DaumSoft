@@ -35,13 +35,39 @@ if(str.charAt(0)=='^' && !flag) {	// start
 
 public class Perform3 {
 	
-	public Perform3() {	}
-
+	private DataDAO dao = null;
+	private int[] batchSizeSet = {10, 100, 1000, 5000, 10000, 50000, 100000, 175800};
+	private int loopCount = 5;
+	private long[] resultSet = null;
+	private long average = 0;
+	
+	public Perform3() {
+		try {
+			resultSet = new long[loopCount+1];
+			for(int i=0; i<batchSizeSet.length; i++) {
+				System.out.println(batchSizeSet[i]);
+				for(int j=0; j<loopCount; j++) {
+					resultSet[j] = action1_1(batchSizeSet[i]);
+					average += resultSet[j];
+					if(countData()==175799)
+						clearDB();
+					else
+						throw new ArithmeticException();
+				}
+				printResult(resultSet, average/loopCount);
+				init();
+				System.out.println();
+			}
+		} catch (ArithmeticException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Perform3(int batchSize) {
 		action1_1(batchSize);
 	}
 
-	public void action1_1(int batch) {
+	public long action1_1(int batch) {
 		
 		long start = System.currentTimeMillis();
 		
@@ -100,8 +126,10 @@ public class Perform3 {
 		
 		long end = System.currentTimeMillis();
 		
-		System.out.println("Perform3_action1_1 실행완료!!!");
-		System.out.println("처리시간 : " + (end-start));
+		//System.out.println("Perform3_action1_1 실행완료!!!");
+		//System.out.println("처리시간 : " + (end-start));
+		
+		return end-start;
 		
 	}
 
@@ -141,4 +169,29 @@ public class Perform3 {
 		return result;
 	}
 	
+	
+	private int countData() {
+		dao = new DataDAO("2");
+		//int a = dao.countData();
+		//System.out.println("datacount : " + a);
+		//return a;
+		return dao.countData();
+	}
+	
+	private void clearDB() {
+		dao.clearDB();
+	}
+	
+	private void init() {
+		for(int i=0; i<loopCount; i++) {
+			resultSet[i] = 0;
+		}
+		average = 0;
+	}
+	
+	private void printResult(long[] resultSet, long average) {
+		for(int i=0; i<resultSet.length; i++)
+			System.out.print(resultSet[i] + " ");
+		System.out.println("\t" + average);
+	}
 }

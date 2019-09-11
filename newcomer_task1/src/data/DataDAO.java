@@ -15,7 +15,7 @@ public class DataDAO {
 	
 	String tablename = null;
 	
-	public DataDAO() {	}
+	public DataDAO() { }
 
 	public DataDAO(String num) {
 		tablename = "DOC" + num;
@@ -213,7 +213,7 @@ public class DataDAO {
 		String sql = "insert into " + tablename + "(" + columnList.get(0) + "," + columnList.get(1) + "," + columnList.get(2) + ") values (?,?,?)";
 		int outloop = 0;
 		int listsize = 0;
-		int t = type.equals("skip")?1:0;
+		//int t = type.equals("skip")?1:0;
 		listsize = list.size();
 		outloop = (listsize-1)/batch;
 		
@@ -222,29 +222,55 @@ public class DataDAO {
 			pstmt = conn.prepareStatement(sql);
 			conn.setAutoCommit(false);
 			
-			for(int i=0; i<outloop; i++) {
-				for(int j=i*batch+t; j<=(i+1)*batch; j++) {
-					pstmt.setInt(1, Integer.parseInt(list.get(j)[0]));
-					pstmt.setString(2, list.get(j)[1]);
-					pstmt.setString(3, list.get(j)[2]);
+			if(type.equals("skip")) {
+				for(int i=0; i<outloop; i++) {
+					for(int j=i*batch+1; j<=(i+1)*batch; j++) {
+						pstmt.setInt(1, Integer.parseInt(list.get(j)[0]));
+						pstmt.setString(2, list.get(j)[1]);
+						pstmt.setString(3, list.get(j)[2]);
+						pstmt.addBatch();			// addBatch에 담기
+						pstmt.clearParameters();	// 파라미터 Clear
+					}
+	                pstmt.executeBatch();	// Batch 실행
+	                pstmt.clearBatch();		// Batch 초기화
+	                conn.commit();			// 커밋
+				}
+				
+				for(int i=outloop*batch+1; i<listsize; i++) {
+					pstmt.setInt(1, Integer.parseInt(list.get(i)[0]));
+					pstmt.setString(2, list.get(i)[1]);
+					pstmt.setString(3, list.get(i)[2]);
 					pstmt.addBatch();			// addBatch에 담기
 					pstmt.clearParameters();	// 파라미터 Clear
 				}
-                pstmt.executeBatch();	// Batch 실행
-                pstmt.clearBatch();		// Batch 초기화
-                conn.commit();			// 커밋
+				pstmt.executeBatch();	// Batch 실행
+	            pstmt.clearBatch();		// Batch 초기화
+	            conn.commit();			// 커밋
+			} else {
+				for(int i=0; i<outloop; i++) {
+					for(int j=i*batch; j<(i+1)*batch; j++) {
+						pstmt.setInt(1, Integer.parseInt(list.get(j)[0]));
+						pstmt.setString(2, list.get(j)[1]);
+						pstmt.setString(3, list.get(j)[2]);
+						pstmt.addBatch();			// addBatch에 담기
+						pstmt.clearParameters();	// 파라미터 Clear
+					}
+					pstmt.executeBatch();	// Batch 실행
+					pstmt.clearBatch();		// Batch 초기화
+					conn.commit();			// 커밋
+				}
+				
+				for(int i=outloop*batch; i<listsize; i++) {
+					pstmt.setInt(1, Integer.parseInt(list.get(i)[0]));
+					pstmt.setString(2, list.get(i)[1]);
+					pstmt.setString(3, list.get(i)[2]);
+					pstmt.addBatch();			// addBatch에 담기
+					pstmt.clearParameters();	// 파라미터 Clear
+				}
+				pstmt.executeBatch();	// Batch 실행
+				pstmt.clearBatch();		// Batch 초기화
+				conn.commit();			// 커밋
 			}
-			
-			for(int i=outloop*batch+1; i<listsize; i++) {
-				pstmt.setInt(1, Integer.parseInt(list.get(i)[0]));
-				pstmt.setString(2, list.get(i)[1]);
-				pstmt.setString(3, list.get(i)[2]);
-				pstmt.addBatch();			// addBatch에 담기
-				pstmt.clearParameters();	// 파라미터 Clear
-			}
-			pstmt.executeBatch();	// Batch 실행
-            pstmt.clearBatch();		// Batch 초기화
-            conn.commit();			// 커밋
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -453,7 +479,7 @@ public class DataDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
-		String sql = "delete from DOC1";
+		String sql = "delete from " + tablename;
 
 		try {
 			conn = new DBConnection().getConnection();
@@ -475,7 +501,7 @@ public class DataDAO {
 		ResultSet rs = null;
 		int result = 0;
 		
-		String sql = "select count(*) from DOC1";
+		String sql = "select count(*) from " + tablename;
 
 		try {
 			conn = new DBConnection().getConnection();

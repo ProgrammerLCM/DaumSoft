@@ -21,7 +21,8 @@ public class Perform1 {
 	private BufferedReader bufferedReader = null;
 	private String[] methodCommentSet = {"버퍼를 통해 한 줄씩, batch 미사용", "리스트를 전달 한줄씩, batch 미사용", "버퍼를 통해 한 줄씩, batch 사용", "리스트를 전달, batch 사용(기본)", "리스트를 전달, batch 사용(이중for문)"};
 	private String[] methodNameSet = {"inputBbyONEbatchX", "inputLbyONEbatchX", "inputBbyONEbatchO", "inputLbatchObasic", "inputLbatchOfor"};  
-	private int[] batchSizeSet = {10, 100, 1000, 5000, 10000, 50000, 100000, 175800};
+	private int[] batchSizeSet = {100, 1000, 5000, 10000, 50000, 100000, 175800};
+	//private int[] batchSizeSet = {10, 100, 1000, 5000, 10000, 50000, 100000, 175800};
 	private int loopCount = 1;
 	private long[] resultSet = null;
 	private long average = 0;
@@ -33,6 +34,28 @@ public class Perform1 {
 	public Perform1(int batchSize) {
 		//inputOneSQL(batchSize);
 		inputOneSQL2(batchSize);
+	}
+	
+	public Perform1(String str) {
+		try {
+			resultSet = new long[loopCount+1];
+			for(int i=0; i<batchSizeSet.length; i++) {
+				System.out.println(batchSizeSet[i]);
+				for(int j=0; j<loopCount; j++) {
+					resultSet[j] = inputLbatchOfor(batchSizeSet[i]);
+					average += resultSet[j];
+					if(countData()==175799)
+						clearDB();
+					else
+						throw new ArithmeticException();
+				}
+				printResult(resultSet, average/loopCount);
+				init();
+				System.out.println();
+			}
+		} catch (ArithmeticException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Perform1() {
@@ -109,7 +132,7 @@ public class Perform1 {
 	}
 	
 	private int countData() {
-		dao = new DataDAO();
+		dao = new DataDAO("1");
 		//int a = dao.countData();
 		//System.out.println("datacount : " + a);
 		//return a;
@@ -137,7 +160,7 @@ public class Perform1 {
 	
 	
 	
-public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형태로 전달, batch을 사용해서 삽입, 이중 for문 batch
+	public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형태로 전달, batch을 사용해서 삽입, 이중 for문 batch
 		
 		long start = System.currentTimeMillis();
 	
