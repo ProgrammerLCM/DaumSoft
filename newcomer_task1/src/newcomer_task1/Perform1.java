@@ -22,7 +22,7 @@ public class Perform1 {
 	private String[] methodCommentSet = {"버퍼를 통해 한 줄씩, batch 미사용", "리스트를 전달 한줄씩, batch 미사용", "버퍼를 통해 한 줄씩, batch 사용", "리스트를 전달, batch 사용(기본)", "리스트를 전달, batch 사용(이중for문)"};
 	private String[] methodNameSet = {"inputBbyONEbatchX", "inputLbyONEbatchX", "inputBbyONEbatchO", "inputLbatchObasic", "inputLbatchOfor"};  
 	private int[] batchSizeSet = {10, 100, 1000, 5000, 10000, 50000, 100000, 175800};
-	private int loopCount = 3;
+	private int loopCount = 1;
 	private long[] resultSet = null;
 	private long average = 0;
 	Class cls = null;
@@ -32,7 +32,7 @@ public class Perform1 {
 	// 테이블 하나 채울 때 쓰는 생성자
 	public Perform1(int batchSize) {
 		//inputOneSQL(batchSize);
-		inputLbatchOfor(batchSize);
+		inputOneSQL2(batchSize);
 	}
 	
 	public Perform1() {
@@ -181,7 +181,7 @@ public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형
 
 
 
-	public long inputOneSQL(int batch) {	// 전체를 파싱하고 리스트 형태로 전달, batch을 사용해서 삽입, 이중 for문 batch
+	public long inputOneSQL(int batch) {	// sql문 모아서 보내기
 		
 		long start = System.currentTimeMillis();
 		
@@ -215,8 +215,48 @@ public long inputLbatchOfor(int batch) {	// 전체를 파싱하고 리스트 형
 		
 		long end = System.currentTimeMillis();
 		
-		//System.out.println("inputLbatchOfor 실행완료!!!");
+		//System.out.println("inputOneSQL 실행완료!!!");
 		//System.out.print((end-start) + "\t");
+		
+		return end-start;
+	}
+	
+	public long inputOneSQL2(int batch) {	// sql문 모아서 보내기
+		
+		long start = System.currentTimeMillis();
+		
+		TsvParserSettings settings = null;
+		TsvParser parser = null;
+		List<String[]> list = null;
+		List<String> colist = null;
+		
+		String filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1\\doc.tsv";
+		
+		try {
+			// FileInputStream : 파일을 바이트 단위로 읽어옴
+			// InputStreamReader : 바이트 스트림을 문자 스트림으로 변환
+			fileInputStream = new FileInputStream(filepath);
+			inputStreamReader = new InputStreamReader(fileInputStream,"UTF8");
+			bufferedReader = new BufferedReader(inputStreamReader);
+			dao = new DataDAO("1");
+			
+			settings = new TsvParserSettings();
+			parser = new TsvParser(settings);
+			list = parser.parseAll(bufferedReader);
+			colist = dao.selectColumn();
+			dao.insert_inputOneSQL2(list, batch, colist);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(bufferedReader != null) { try { bufferedReader.close(); } catch (IOException e) { } }
+			if(inputStreamReader != null) { try { inputStreamReader.close(); } catch (IOException e) { } }
+			if(fileInputStream != null) { try { fileInputStream.close(); } catch (IOException e) { } }
+		}
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("inputOneSQL2 실행완료!!!");
+		System.out.print((end-start) + "\t");
 		
 		return end-start;
 	}

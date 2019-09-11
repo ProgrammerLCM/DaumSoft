@@ -309,6 +309,72 @@ public class DataDAO {
 	}
 	
 	
+	public void insert_inputOneSQL2(List<String[]> list, int batch, List<String> columnlist) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		List<String> columnList = null;
+		List<String[]> subList = null;
+		
+		if(columnlist != null && list != null) {
+			columnList = columnlist;
+			subList = list.subList(1, list.size());
+		}
+		
+		String sql = "insert into " + tablename + "(" + columnList.get(0) + "," + columnList.get(1) + "," + columnList.get(2) + ") values ";
+		//String sql = null;
+		boolean comma = false;
+		int x = 0;
+		int sublistsize = 0;
+		sublistsize = subList.size();
+		
+		try {
+			conn = new DBConnection().getConnection();
+			
+			if(sublistsize != 0) {
+				for(int i=0; i<sublistsize; i++) {
+					if(comma)
+						sql += ",";
+					sql += "(?,?,?)";
+					comma = true;
+					if((i+1)%batch == 0) {
+						pstmt = conn.prepareStatement(sql);
+						for(int j=batch*x, k=1; j<batch*(x+1); j++,k++) {
+							pstmt.setInt(k*3-2, Integer.parseInt(subList.get(j)[0]));
+							pstmt.setString(k*3-1, subList.get(j)[1]);
+							pstmt.setString(k*3, subList.get(j)[2]);
+							
+						}
+						pstmt.executeUpdate();
+						sql = new String("insert into " + tablename + "(" + columnList.get(0) + "," + columnList.get(1) + "," + columnList.get(2) + ") values ");
+						x++;
+						comma = false;
+					}
+				}
+				if(comma) {
+					pstmt = conn.prepareStatement(sql);
+					for(int j=batch*x, k=1; j<sublistsize; j++,k++) {
+						pstmt.setInt(k*3-2, Integer.parseInt(subList.get(j)[0]));
+						pstmt.setString(k*3-1, subList.get(j)[1]);
+						pstmt.setString(k*3, subList.get(j)[2]);
+					}
+					pstmt.executeUpdate();
+				}
+			}
+			
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {} 
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		
+	}
+	
+	
 	//==================================================================
 	
 	

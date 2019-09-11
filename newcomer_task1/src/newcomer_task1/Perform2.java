@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import com.univocity.parsers.tsv.TsvWriter;
+import com.univocity.parsers.tsv.TsvWriterSettings;
+
 import data.DataDAO;
 import util.DBConnection;
 
@@ -91,6 +94,7 @@ public class Perform2 {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void fileWrite(List<String> column, List<String[]> list, String sub, String type, String extension) {
 
 		String filepath = "C:\\Users\\Daumsoft\\git\\DaumSoft\\newcomer_task1";
@@ -100,12 +104,18 @@ public class Perform2 {
 			BufferedWriter fw = new BufferedWriter(new FileWriter(filepath+"/"+title+"."+extension, false));
 			
 			if(type.equals("tsv")) {
+				// 수정 후 2.0 ~ 2.1초대로 증가
+				//TsvWriter writer = new TsvWriter(fw, new TsvWriterSettings());
+				//writer.writeHeaders(column.get(0), column.get(1), column.get(2));
+				//writer.writeStringRows(list);
+				// 기존 '\t'로 tsv파일 만들기
 				fw.write(column.get(0)+"\t"+column.get(1)+"\t"+column.get(2));
 				fw.newLine();
 				for (String[] str : list) {
 					fw.write(str[0]+"\t"+str[1]+"\t"+str[2]);
 					fw.newLine();
 				}
+				
 			} else if(type.equals("tag")) {
 				for (String[] str : list) {
 					fw.write("^[START]\r\n[" + column.get(0) + "]\r\n" + str[0] + "\r\n[" + column.get(1) + "]\r\n" + str[1] + "\r\n[" + column.get(2) + "]\r\n" + str[2]+"\r\n^[END]");
